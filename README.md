@@ -1,4 +1,4 @@
-# Brown CS 1951x: Formal Proof and Verification, 2023
+# Brown CS 1951x: Formal Proof and Verification, 2024
 
 In this repository, you'll find Lean files for [CS1951x](https://browncs1951x.github.io/).
 
@@ -24,18 +24,18 @@ following our [course setup instructions](https://browncs1951x.github.io/setup.h
 To set up this project, run:
 
 ```bash
-git clone https://github.com/BrownCS1951x/fpv2023.git
-cd fpv2023
+git clone https://github.com/BrownCS1951x/fpv2024.git
+cd fpv2024
 lake exe cache get 
 lake build LoVe.LoVelib
 ```
 
 When you open VSCode, make sure that you use the **Open Folder** feature
-to open the entire `fpv2023` directory,
+to open the entire `fpv2024` directory,
 instead of opening individual files. 
 The easiest way to do this is from the command line:
 ```bash
-cd fpv2023
+cd fpv2024
 code .
 ```
 But `File -> Open Folder...` works fine too.
@@ -95,7 +95,7 @@ Then open the Command Palette (`ctrl-shift-p` or `cmd-shift-p`)
 and run `Lean 4: Restart Server`. 
 
 If that doesn't work, let's make sure you have a fresh copy of the library.
-In the root `fpv2023` directory, run:
+In the root `fpv2024` directory, run:
 ```bash
 lake update
 lake exe cache get 
