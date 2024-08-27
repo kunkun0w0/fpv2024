@@ -69,7 +69,7 @@ Strengths:
 
 ### Repository (Demos, Exercises, Homework)
 
-    https://github.com/BrownCS1951x/fpv2023
+    https://github.com/BrownCS1951x/fpv2024
 
 The file you are currently looking at is a demo.
 For each chapter of the Hitchhiker's Guide, there will be approximately
