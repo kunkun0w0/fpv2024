@@ -1,0 +1,42 @@
+name: Update course site on push 
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout course repository
+      uses: actions/checkout@v3
+
+    - name: Generate markdown files 
+      run: |
+        lake build
+        lake exe mdgen LoVe markdown
+
+    - name: Set up SSH
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.SITE_DEPLOY_KEY }}
+
+    - name: Clone course site 
+      run: |
+        git config --global user.name "GitHub Bot"
+        git config --global user.email "bot@example.com"
+        git clone git@github.com:BrownCS1951x/BrownCS1951x.github.io.git site 
+
+    - name: Add markdown files to course site 
+      run: |
+        mkdir -p site/src/docs/homework/  
+        mv markdown/Homework/* site/src/docs/homework/
+
+    - name: Commit and push changes
+      run: |
+        cd site
+        git add .
+        git commit -m "Sync from course repository"
+        git push
