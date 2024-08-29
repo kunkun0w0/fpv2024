@@ -4,7 +4,10 @@ defaultTargets = ["LoVe"]
 [leanOptions]
 autoImplicit = false
 linter.unusedVariables = false 
-# linter.unusedTactic = false
+
+[moreServerOptions]
+linter.unusedTactic = false
+linter.unreachableTactic = false
 
 [[require]]
 name = "mathlib"
@@ -14,12 +17,7 @@ rev = "a719ba5c3115d47b68bf0497a9dd1bcbb21ea663"
 [[require]]
 name = "autograder" 
 git = "https://github.com/robertylewis/lean4-autograder-main" 
-rev = "7b389cac593fa1881f07916ff9818b208a958eef"
-
+rev = "baa159d7ce1e09469c4113c57b018395d2c13ade"
 
 [[lean_lib]]
 name = "LoVe"
-
-[[lean_exe]]
-name = "stripsols"
-root = "LoVe.StripSols"
