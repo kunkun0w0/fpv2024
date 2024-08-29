@@ -1,0 +1,19 @@
+name: Trigger Website Repository on Push
+
+on:
+  push:
+    branches:
+      - main  # or the branch you want to monitor
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Trigger Course Repository Workflow
+      run: |
+        curl -X POST \
+          -H "Accept: application/vnd.github.v3+json" \
+          -H "Authorization: token ${{ secrets.FPV2024_DEPLOY_KEY }}" \
+          https://api.github.com/repos/BrownCS1951x/BrownCS1951x.github.io/dispatches \
+          -d '{"event_type":"sync-trigger"}'
