@@ -40,26 +40,6 @@ code .
 ```
 But `File -> Open Folder...` works fine too.
 
-### Forking this repository
-
-If you are comfortable with `git`, you may want to push your work to your own copy of this repository as a backup.
-This is a wise idea!
-However, your work will probably contain solutions to homework assignments that shouldn't be shared publicly,
-and GitHub enforces that forks of a public repository must also be public.
-
-Instead of using the built-in "Fork" button on GitHub, we ask that you do this the old fashioned way. (Replace `{username}` below with your GitHub user name.)
-
-* Clone this repository locally (as above) or in Codespaces (as below).
-* Create a new, empty, private GitHub repository under your account, also called `fpv2024`.
-* In the root of your clone of this repo, run `git remote add {username} git@github.com:{username}/fpv2024.git`
-* You can now `git pull` to get updates from our repository, and `git push username main` to push commits to the `main` branch of your new private fork.
-
-<details>
-<summary>Why not GitHub Classrooms?</summary>
-
-The astute reader will notice that this workaround is doing something similar to what GitHub Classrooms can achieve. We've decided to keep things simple and avoid some of the overhead involved with a Classrooms setup. In particular, it seems that with the new Classrooms infrastructure introduced this spring, you all would receive pull requests every time we update our version of the repo, which feels too loud!
-</details>
-
 ### Codespaces setup
 
 If you are using GitHub Codespaces for this class, you can ignore all of the above.
@@ -101,6 +81,27 @@ cp src/homework/homework_1.lean src/homework/homework_1_rob.lean
 
 I would complete the homework in the copy, `homework_1_rob.lean`, 
 and submit that file on Gradescope.
+
+
+### Forking this repository
+
+If you are comfortable with `git`, you may want to push your work to your own copy of this repository as a backup.
+This is a wise idea!
+However, your work will probably contain solutions to homework assignments that shouldn't be shared publicly,
+and GitHub enforces that forks of a public repository must also be public.
+
+Instead of using the built-in "Fork" button on GitHub, we ask that you do this the old fashioned way. (Replace `{username}` below with your GitHub user name.)
+
+* Clone this repository locally or in Codespaces as above.
+* Create a new, empty, private GitHub repository under your account, also called `fpv2024`.
+* In the root of your clone of this repo, run `git remote add {username} git@github.com:{username}/fpv2024.git`
+* You can now `git pull` to get updates from our repository, and `git push username main` to push commits to the `main` branch of your new private fork.
+
+<details>
+<summary>Why not GitHub Classrooms?</summary>
+
+The astute reader will notice that this workaround is doing something similar to what GitHub Classrooms can achieve. We've decided to keep things simple and avoid some of the overhead involved with a Classrooms setup. In particular, it seems that with the new Classrooms infrastructure introduced this spring, you all would receive pull requests every time we update our version of the repo, which feels too loud!
+</details>
 
 ### Debugging
 
