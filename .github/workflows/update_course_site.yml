@@ -34,14 +34,20 @@ jobs:
     - name: Add markdown files to course site 
       run: |
         # Homework
-        mkdir -p site/src/docs/homework/  
-        mv -v markdown/Homework/* site/src/docs/homework/
+        if [ -d markdown/Homework ]; then
+          mkdir -p site/src/docs/homework/  
+          mv -v markdown/Homework/* site/src/docs/homework/
+        fi
         # Labs
-        mkdir -p site/src/docs/labs/  
-        mv -v markdown/Labs/* site/src/docs/labs/
+        if [ -d markdown/Labs ]; then
+          mkdir -p site/src/docs/labs/  
+          mv -v markdown/Labs/* site/src/docs/labs/
+        fi
         # Lectures
-        mkdir -p site/src/docs/labs/  
-        mv -v markdown/Lectures/* site/src/docs/lectures/
+        if [ -d markdown/Lectures ]; then
+          mkdir -p site/src/docs/lectures/  
+          mv -v markdown/Lectures/* site/src/docs/lectures/
+        fi
 
     - name: Commit and push changes
       run: |
