@@ -13,6 +13,25 @@ Proof assistants (also called interactive theorem provers)
 * can be tedious to use;
 * are highly addictive (think video games).
 
+The basic picture:
+* You, the programmer, write down some *definitions.*
+  These could be data types, functions, mathematical concepts, ...
+  Examples: natural numbers, lists, a function that reverses a list.
+* Then you write down *specifications* for these definitions.
+  A specification is a logical formula -- a "true or false" statement --
+  that describes how these definitions behave.
+  Example: "If you apply `reverse` to a list twice, you get the original list back"
+  (but translated into logic).
+* Then you (try to!) write *proofs* of these specifications.
+  These proofs are checked by the proof assistant.
+  It will report errors, ambiguities, missing steps, ...
+  but if it says the proof is correct, it's certainly correct!
+  That means your definition must satisfy its specification.
+
+A proof assistant is the combination of the language for writing these things,
+the interface for developing proofs, the algorithm for checking these proofs,
+and even the logic that defines when a proof is complete.
+
 A selection of proof assistants, classified by logical foundations:
 
 * set theory: Isabelle/ZF, Metamath, Mizar;
@@ -75,7 +94,7 @@ The file you are currently looking at is a demo.
 For each chapter of the Hitchhiker's Guide, there will be approximately
 one demo, one exercise sheet, and one homework.
 
-* Demos will be covered in class. These are "lecture notes."
+* Lecture demos will be covered in class. These are "lecture notes," in place of slides.
   We'll post skeletons of the demos before class, and completed demos after class.
 
 * Exercises are for weekly lab sessions run by the TAs.
@@ -118,25 +137,27 @@ open Nat
 theorem infinitude_of_primes : ∀ N, ∃ p ≥ N, Nat.Prime p := by
 
   intro M
+
   let F := M ! + 1
   let q := minFac F
   use q
 
   have qPrime : Nat.Prime q := by
     refine minFac_prime ?_
-    have hn : M ! > 0 := factorial_pos M
+    have hm : M ! > 0 := by exact factorial_pos M
     linarith
 
   apply And.intro
 
   { by_contra hqM
-    have h1 : q ∣ M ! + 1 := minFac_dvd F
-    have hqM2 : q ≤ M := by linarith
-    have hqM3 : q ∣ M ! := Iff.mpr (Prime.dvd_factorial qPrime) hqM2
-    have hq1 : q ∣ 1 := Iff.mp (Nat.dvd_add_right hqM3) h1
-    apply Nat.Prime.not_dvd_one qPrime hq1
-  }
-  { assumption }
+    have h1 : q ∣ M ! + 1 := by exact minFac_dvd F
+    have hqM2 : q ≤ M := by exact Nat.le_of_not_ge hqM
+    have hqM3 : q ∣ M ! := by exact (Prime.dvd_factorial qPrime).mpr hqM2
+    have hq1 : q ∣ 1 := by exact (Nat.dvd_add_iff_right hqM3).mpr h1
+    have hqn1 : ¬ q ∣ 1 := by exact Nat.Prime.not_dvd_one qPrime
+    contradiction }
+
+  { exact qPrime }
   done
 
 
@@ -145,24 +166,14 @@ theorem infinitude_of_primes : ∀ N, ∃ p ≥ N, Nat.Prime p := by
 
 def biggerPrime (M : ℕ) : ℕ := Nat.minFac (M ! + 1)
 
-#eval biggerPrime 7
+#eval biggerPrime 11
 
-theorem biggerPrimeIsPrime : ∀ N, Nat.Prime (biggerPrime N) := by
-  intro M
-  refine minFac_prime ?_
-  have hn : M ! > 0 := factorial_pos M
-  linarith
+theorem biggerPrime_is_prime : ∀ N, Nat.Prime (biggerPrime N) := by
+  sorry
   done
 
-theorem biggerPrimeIsBigger : ∀ N, biggerPrime N ≥ N := by
-  intro M
-  by_contra hqM
-  have h1 : (biggerPrime M) ∣ M ! + 1 := minFac_dvd _
-  have hqM2 : biggerPrime M ≤ M := by linarith
-  have hqM3 : biggerPrime M ∣ M ! :=
-    Iff.mpr (Prime.dvd_factorial (biggerPrimeIsPrime _)) hqM2
-  have hq1 : biggerPrime M ∣ 1 := Iff.mp (Nat.dvd_add_right hqM3) h1
-  apply Nat.Prime.not_dvd_one (biggerPrimeIsPrime _) hq1
+theorem biggerPrime_is_bigger : ∀ N, biggerPrime N ≥ N := by
+  sorry
   done
 
 
@@ -171,6 +182,6 @@ theorem infinitude_of_primes2 : ∀ N, ∃ p ≥ N, Nat.Prime p := by
   intro N
   use biggerPrime N
   apply And.intro
-  { exact biggerPrimeIsBigger _ }
-  { exact biggerPrimeIsPrime _ }
+  { exact biggerPrime_is_bigger _ }
+  { exact biggerPrime_is_prime _ }
   done
