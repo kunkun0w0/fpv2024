@@ -59,13 +59,13 @@ Computer science:
 
 ## Lean
 
-Lean is a proof assistant developed primarily by Leonardo de Moura (Microsoft
-Research) since 2012.
+Lean is a proof assistant developed primarily by Leonardo de Moura
+(Amazon Web Services/Lean FRO) since 2012.
 
 Its mathematical library, `mathlib`, is developed by a user community.
 
 We are using Lean 4, a recent version. We use its basic libraries, `mathlib`, and
-`LoVelib`. Lean is a research project.
+`LoVelib`. Lean is both a research project and a production language.
 
 Strengths:
 
