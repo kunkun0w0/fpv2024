@@ -135,29 +135,7 @@ open Nat
 -- here's a proof that there are infinitely many primes, as a mathematical theorem
 
 theorem infinitude_of_primes : ∀ N, ∃ p ≥ N, Nat.Prime p := by
-
-  intro M
-
-  let F := M ! + 1
-  let q := minFac F
-  use q
-
-  have qPrime : Nat.Prime q := by
-    refine minFac_prime ?_
-    have hm : M ! > 0 := by exact factorial_pos M
-    linarith
-
-  apply And.intro
-
-  { by_contra hqM
-    have h1 : q ∣ M ! + 1 := by exact minFac_dvd F
-    have hqM2 : q ≤ M := by exact Nat.le_of_not_ge hqM
-    have hqM3 : q ∣ M ! := by exact (Prime.dvd_factorial qPrime).mpr hqM2
-    have hq1 : q ∣ 1 := by exact (Nat.dvd_add_iff_right hqM3).mpr h1
-    have hqn1 : ¬ q ∣ 1 := by exact Nat.Prime.not_dvd_one qPrime
-    contradiction }
-
-  { exact qPrime }
+  sorry
   done
 
 
