@@ -1,27 +1,31 @@
 import LoVe.LoVelib
 import AutograderLib
 
+namespace LoVe
+namespace HW1
+
 /- # Homework 1: Definitions and Statements
 
 The goal of this homework is to get you used to interacting with Lean.
 We're not doing any *proving* yet, just some defining!
 
-Homework must be done in accordance with the course policies on collaboration
-and academic integrity.
-
 Replace the placeholders (e.g., `:= sorry`) with your solutions. When you are
 finished, submit *only* this file to the appropriate Gradescope assignment.
 
-When you submit to Gradescope, problems tagged as `autograded` will be
-autograded. *This is not your final grade*; a significant portion of the
-assignment will be manually graded. Therefore, you should still check your
-submission for completeness and correctness even if the autograder does not
-produce errors. -/
+When you submit to Gradescope, problems tagged as `autogradedProof` or
+`autogradedDef` will be autograded. *This is not your final grade*; a
+significant portion of the assignment will be manually graded. Therefore, you
+should still check your submission for completeness and correctness even if
+the autograder does not produce errors.
 
-namespace LoVe
-namespace HW1
+In the same vein, even if the autograder cannot prove that your definitions
+are equal to our solutions, it does not mean that they are semantically incorrect.
+Specifically, the autograder will not be able to prove that two functions are
+definitionally equal if one contains redundant cases. We will give you partial
+credit for this if the function is correct otherwise.
 
-set_option autoImplicit false
+Finally, homework must be done in accordance with the course policies on
+collaboration and academic integrity. -/
 
 /- ## Question 1 (6 points): Terms
 
@@ -31,7 +35,9 @@ opaque α : Type
 opaque β : Type
 opaque γ : Type
 
-/- 1.1 (4 points). Complete the following definitions by replacing the `sorry`
+/- ### 1.1 (4 points)
+
+Complete the following definitions by replacing the `sorry`
 placeholders with terms of the expected type.
 
 Please use reasonable names for the bound variables, e.g., `a : α`, `b : β`,
@@ -42,29 +48,29 @@ Hitchhiker's Guide. As explained there, you can use `_` as a placeholder while
 constructing a term. By hovering over `_`, you will see the current logical
 context. -/
 
-@[autograded 1] def B : (α → β) → (γ → α) → γ → β :=
+@[autogradedProof 1] def B : (α → β) → (γ → α) → γ → β :=
   sorry
 
-@[autograded 1] def S : (α → β → γ) → (α → β) → α → γ :=
+@[autogradedProof 1] def S : (α → β → γ) → (α → β) → α → γ :=
   sorry
 
-@[autograded 1] def moreNonsense : (γ → (α → β) → α) → γ → β → α :=
+@[autogradedProof 1] def moreNonsense : (γ → (α → β) → α) → γ → β → α :=
   sorry
 
-@[autograded 1] def evenMoreNonsense : (α → α → β) → (β → γ) → α → β → γ :=
+@[autogradedProof 1] def evenMoreNonsense : (α → α → β) → (β → γ) → α → β → γ :=
   sorry
 
-/- 1.2 (2 points). Complete the following definition.
+/- ### 1.2 (2 points)
+
+Complete the following definition.
 
 This one looks more difficult, but it should be fairly straightforward if you
 follow the procedure described in the Hitchhiker's Guide.
 
 Note: Peirce is pronounced like the English word "purse." -/
 
-@[autograded 2] def weakPeirce : ((((α → β) → α) → α) → β) → β :=
+@[autogradedProof 2] def weakPeirce : ((((α → β) → α) → α) → β) → β :=
   sorry
-
-
 
 
 /- ## Question 2 (4 points): Typing Derivation
@@ -81,7 +87,7 @@ Feel free to introduce abbreviations to avoid repeating large contexts `C`. -/
 
 
 
-/-! ## Question 3 (3 points): Implicit Arguments
+/- ## Question 3 (3 points): Implicit Arguments
 
 In this question, we'll show you some useful syntax features of Lean that will
 appear throughout the semester.
@@ -122,11 +128,10 @@ def appendImplicit {α : Type} : List α → List α → List α
 #eval appendImplicit [3, 1] [4, 1, 5]
 #eval appendImplicit [true] [true, false]
 
-/-
-Notice that we did not need to give the argument `ℕ` or `Bool` to
+/- Notice that we did not need to give the argument `ℕ` or `Bool` to
 `appendImplicit`.
 
-Prefixing a definition name with `@` gives the corresponding definition in
+Prefixing a definition name with `@` gives the corresponding defintion in
 which all implicit arguments have been made explicit. This is useful in
 situations where Lean cannot work out how to instantiate the implicit
 argument. -/
@@ -135,8 +140,9 @@ argument. -/
 #eval @appendImplicit ℕ [3, 1] [4, 1, 5]
 #eval @appendImplicit _ [3, 1] [4, 1, 5]
 
+/- ### 3.1 (1 point)
 
-/-! 3.1 (1 point). Define the function `reverse`, which takes a list (whose
+Define the function `reverse`, which takes a list (whose
 elements have arbitrary type `α`) and reverses it. Write the type signature and
 implement this function. Make the type `α` an implicit argument.
 
@@ -155,7 +161,7 @@ use the notation `xs ++ ys` for `List.append xs ys`. -/
 
 
 
-/-! Notice that when the list argument to `reverse` is empty, it is not clear
+/- Notice that when the list argument to `reverse` is empty, it is not clear
 what type should be filled in for `α`. (Try evaluating `reverse []`, without
 explicitly specifying any types, and see what happens!) The last two examples
 above demonstrate two ways to specify types when that happens.
@@ -171,10 +177,10 @@ We can also specify *named* implicit arguments by using the following syntax: -/
 
 #eval append (α := ℕ) [] []
 
--- For functions with multiple implicit arguments, we can also choose to specify
--- just some of the implicit arguments using named arguments.
+/- For functions with multiple implicit arguments, we can also choose to specify
+just some of the implicit arguments using named arguments. -/
 
-/-! We can also used named arguments with explicit arguments, too! Notice that
+/- We can also used named arguments with explicit arguments, too! Notice that
 in this definition, we're also using *default arguments*: if we specify `x` and
 `z` but fail to specify `y` and/or `w`, `y` and/or `w` will automatically be
 bound to the values `1` and/or `2`, respectively. Notice also that, using named
@@ -188,64 +194,102 @@ def f (x : ℕ) (y : ℕ := 1) (w : ℕ := 2) (z : ℕ) :=
 #eval f 4 (z := 3)   -- 4 + 1 + 2 - 3
 #eval f 4 0 (z := 3) -- 4 + 0 + 2 - 3
 
+/- ### 3.2 (1 point)
 
-
-
-/-! 3.2 (1 point). Change the value of `z` below so that the expression
-evaluates to `2`.
--/
+Change the value of `z` below so that the expression evaluates to `2`. -/
 
 #eval f (z := 3) 1
 
-/-! 3.3 (1 point). Specify a value for `w` below so that the expression
-evaluates to `5`. -/
+/- ### 3.3 (1 point)
+
+Specify a value for `w` below so that the expression evaluates to `5`. -/
 
 #eval f (y := 3) (x := 1) (z := 1)
 
+/-
+## Question 4 (5 points): Combining Lists
 
+### 4.1. (2 points)
 
+We define the *melding* (a coined term) of two lists to be the list formed
+by applying a combining function to each corresponding pair of elements in the
+two lists. For instance, the melding of `[1, 2, 3]` and `[4, 5, 6]` using the
+combining function `(+)` would be the list `[5, 7, 9]`. If one list is longer
+than the other, the excess elements in the longer list are ignored. Thus, the
+melding of `["a"]` and `["b", "c"]` using `(++)` is `["ab"]`.
 
+Implement a function `meld` that performs this operation.
+-/
 
-/- ## Question 4 (5 points): Singletons and Flatten
-
-4.1 (1 point). Define the function `singletons` that turns a list into a list of
-singleton lists, where the singleton at each position contains the element in
-that position in the original list.
-
-For instance, `singletons [1, 2, 3, 4]` should evaluate to
-`[[1], [2], [3], [4]]`. -/
-
-def singletons {α : Type} : List α → List (List α)
+@[autogradedDef 2, validTactics #[rfl, simp [meld]]]
+def meld {α β γ : Type} : (α → β → γ) → List α → List β → List γ
   := sorry
 
-/- 4.2 (2 points). Define the function `flatten` that takes a list of lists and
-"flattens" it into a single list.
+/-!
+### 4.2 (1 point)
 
-For example, `flatten [[1], [2, 3], [], [4]]` should evaluate to `[1, 2, 3, 4]`.
+The *product* of two types `α` and `β`, denoted `α × β`, is the type of
+pairs `(a, b)` such that `a : α` and `b : β`. (`(a, b)` is syntactic sugar for
+`Prod.mk a b`, where `Prod.mk : ∀ {α β : Type}, α → β → α × β`.) -/
 
-You should not call any form of append function (`++`, `List.append`, etc.) in
-your solution. -/
+#check (1, 2)
+#check Prod.mk 1951 "X"
 
-def flatten {α : Type} : List (List α) → List α
-  := sorry
+/-!
+The *zipping* of two lists is the list formed by pairing corresponding
+elements. For instance, zipping `[1, 2, 3] : list Nat` and
+`["a", "b", "c"] : List String` yields the list
+`[(1, "a"), (2, "b"), (3, "c")] : List (Nat × String)`.
 
-/-! 4.3 (1 point). State a theorem that says that applying `singletons` and then
-`flatten` to any list gives the same list you started with. -/
+Use `meld` to implement `zip`. The only modification you may make to the line
+below is to replace `sorry` with a *non-recursive* function.
+-/
+@[autogradedDef 1, validTactics #[rfl]]
+def zip {α β : Type} : List α → List β → List (α × β) :=
+meld sorry
+
+/-
+### 4.3 (1 point)
+
+State a lemma that says that the length of the melding of any two lists
+using any combining function is equal to the minimum of the lengths of the two
+lists.
+
+Hint: `min : ℕ → ℕ → ℕ` returns the minimum of two numbers.
+-/
 
 -- Replace `True` with your lemma statement. No need to fill in the `sorry`!
-theorem flatten_singletons : True := sorry
+theorem length_meld : True := sorry
+
+/-
+### 4.4 (1 point)
+
+`Prod.swap` is a function that will take in a pair `(a, b) : α × β` and
+produce the pair `(b, a) : β × α`. That is, it reverses the order of a pair.
+-/
+
+#check Prod.swap
+#eval Prod.swap (1951, "X")
+
+/-
+The following theorem states that zipping lists `xs` and `ys` and then applying
+`swap` to each element of the result is the same as zipping `ys` and `xs`.
+Is this theorem true? If so, explain why, in natural language.
+(You do *not* need to fill in the `sorry`!)
+If not, give a counterexample: that is, provide concrete examples for `xs` and `ys`
+for which this property does not hold.
+
+-/
+
+theorem swap_zip {α β : Type} (xs : List α) (ys : List β) :
+  (zip xs ys).map Prod.swap = zip ys xs :=
+sorry
+
+/-
+Your answer here:
 
 
 
+-/
 
-
-/- 4.4 (1 point). Is it true that applying `flatten` and then `singletons` to a
-list of lists gives you back the same list of lists you started with? If so,
-explain why; if not, provide an example of a list for which the claim does not
-hold. -/
-
--- Write your response to part 4 here.
-
-
-end HW1
-end LoVe
+end HW1 end LoVe
