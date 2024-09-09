@@ -42,7 +42,7 @@ The function arrow is right-associative:
 Polymorphic types are also possible. In Lean, the type variables must be bound
 using `∀`, e.g., `∀α, α → α`.
 
-
+`#check` reports the type of its argument.
 -/
 
 #check ℕ
@@ -76,8 +76,7 @@ __Currying__: functions can be
 * left unapplied (e.g., `f`).
 
 Application is left-associative: `f x y z` = `((f x) y) z`.
-
-`#check` reports the type of its argument. -/
+ -/
 
 
 #check fun x : ℕ ↦ x
