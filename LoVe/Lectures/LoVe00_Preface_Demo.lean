@@ -59,13 +59,13 @@ Computer science:
 
 ## Lean
 
-Lean is a proof assistant developed primarily by Leonardo de Moura
-(Amazon Web Services/Lean FRO) since 2012.
+Lean is a proof assistant developed primarily by Leonardo de Moura (Microsoft
+Research) since 2012.
 
 Its mathematical library, `mathlib`, is developed by a user community.
 
 We are using Lean 4, a recent version. We use its basic libraries, `mathlib`, and
-`LoVelib`. Lean is both a research project and a production language.
+`LoVelib`. Lean is a research project.
 
 Strengths:
 
@@ -135,7 +135,29 @@ open Nat
 -- here's a proof that there are infinitely many primes, as a mathematical theorem
 
 theorem infinitude_of_primes : ∀ N, ∃ p ≥ N, Nat.Prime p := by
-  sorry
+
+  intro M
+
+  let F := M ! + 1
+  let q := minFac F
+  use q
+
+  have qPrime : Nat.Prime q := by
+    refine minFac_prime ?_
+    have hm : M ! > 0 := by exact factorial_pos M
+    linarith
+
+  apply And.intro
+
+  { by_contra hqM
+    have h1 : q ∣ M ! + 1 := by exact minFac_dvd F
+    have hqM2 : q ≤ M := by exact Nat.le_of_not_ge hqM
+    have hqM3 : q ∣ M ! := by exact (Prime.dvd_factorial qPrime).mpr hqM2
+    have hq1 : q ∣ 1 := by exact (Nat.dvd_add_iff_right hqM3).mpr h1
+    have hqn1 : ¬ q ∣ 1 := by exact Nat.Prime.not_dvd_one qPrime
+    contradiction }
+
+  { exact qPrime }
   done
 
 
@@ -147,11 +169,23 @@ def biggerPrime (M : ℕ) : ℕ := Nat.minFac (M ! + 1)
 #eval biggerPrime 11
 
 theorem biggerPrime_is_prime : ∀ N, Nat.Prime (biggerPrime N) := by
-  sorry
+  intro M
+  refine minFac_prime ?_
+  have hm : M ! > 0 := by exact factorial_pos M
+  linarith
   done
 
 theorem biggerPrime_is_bigger : ∀ N, biggerPrime N ≥ N := by
-  sorry
+  intro M
+  let F := M ! + 1
+  let q := minFac F
+  by_contra hqM
+  have h1 : q ∣ M ! + 1 := by exact minFac_dvd F
+  have hqM2 : q ≤ M := by exact Nat.le_of_not_ge hqM
+  have hqM3 : q ∣ M ! := by exact (Prime.dvd_factorial (biggerPrime_is_prime _)).mpr hqM2
+  have hq1 : q ∣ 1 := by exact (Nat.dvd_add_iff_right hqM3).mpr h1
+  have hqn1 : ¬ q ∣ 1 := by exact Nat.Prime.not_dvd_one (biggerPrime_is_prime _)
+  contradiction
   done
 
 
