@@ -17,7 +17,7 @@ rev = "a719ba5c3115d47b68bf0497a9dd1bcbb21ea663"
 [[require]]
 name = "autograder" 
 git = "https://github.com/robertylewis/lean4-autograder-main" 
-rev = "baa159d7ce1e09469c4113c57b018395d2c13ade"
+rev = "bac0a6c9b83279e903d89c56621dbe89fd2b27f3"
 
 [[require]]
 name = "mdgen"
