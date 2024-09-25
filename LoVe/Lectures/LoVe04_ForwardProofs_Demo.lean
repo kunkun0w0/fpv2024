@@ -385,7 +385,16 @@ theorem And_swap_tactical (a b : Prop) :
 
 /-
 
-We talked about the "type tower":
+In "normal" programming languages, there's a strict distinction between
+*terms* and *types*.
+
+In dependent type theory, *everything* is a term, including types.
+Every term has a type, which is itself a term, which has a type, ...
+
+
+
+
+There's a hierarchy of type universes:
 
 -/
 
