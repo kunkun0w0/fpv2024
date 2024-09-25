@@ -15,7 +15,6 @@ namespace LoVe
 
 namespace ForwardProofs
 
-
 /- ## Structured Constructs
 
 Structured proofs are syntactic sugar sprinkled on top of Lean's
@@ -277,18 +276,6 @@ dependent types.
 
 def depFun : (n : ℕ) → {i : ℕ // i ≤ n} :=
 fun n => ⟨0, by linarith⟩
-
-
-/- Example of a term that depends on a term: -/
-
-
-/- Example of a term that depends on a type: -/
-
-
-/- Example of a type that depends on a type: -/
-
-
-
 
 
 /-
