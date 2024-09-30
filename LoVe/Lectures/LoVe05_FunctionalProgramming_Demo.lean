@@ -38,6 +38,9 @@ For `Nat`:
 In addition, inductive types are always finite. `Nat.succ (Nat.succ …)` is not a
 value.
 
+(To read more on `noConfusion`:
+<https://xenaproject.wordpress.com/2018/03/24/no-confusion-over-no_confusion/>)
+
 -/
 
 /-
