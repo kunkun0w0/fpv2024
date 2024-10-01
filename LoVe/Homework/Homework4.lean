@@ -395,10 +395,11 @@ type `HList αs`. Therefore, a table, which is a collection of rows, is
 represented by a value of type `List (HList αs)`. For instance, the following
 table is represented by a `List (HList [String, String, Nat])`:
 
-|--------------|------|------|
-| "Providence" | "RI" | 2912 |
-| "Pawtucket"  | "RI" | 2860 |
-| "Boston"     | "MA" | 2110 |
+| **String**   | **String** | **Nat** |
+|--------------|------------|---------|
+| "Providence" | "RI"       | 2912    |
+| "Pawtucket"  | "RI"       | 2860    |
+| "Boston"     | "MA"       | 2110    |
 
 
 But we can also think of a table as a collection of columns: each column
