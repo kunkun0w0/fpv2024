@@ -18,7 +18,7 @@ Remember that the autograder does not determine your final grade.
 namespace LoVe
 
 
-/- ## Question 1 (4 points): Logic Puzzles
+/- ## Question 1 (5 points): Logic Puzzles
 
 Consider the following tactical proof: -/
 
@@ -218,7 +218,8 @@ theorem quasicontractible_of_exists_assoc_inj {α : Type} :
   (∃ f : α → α → α, Associative f ∧ Injective₂ f) → Quasicontractible α :=
 sorry
 
-/-! 3.4 (1 point). Using `quasicontractible_of_exists_assoc_inj`, prove that
+/-! 
+### 3.4 (1 point). Using `quasicontractible_of_exists_assoc_inj`, prove that
 there exists no associative, injective binary operation on the natural numbers.
 You may write this as a tactic proof, though, once again, some forward reasoning
 will be required.

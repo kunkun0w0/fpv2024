@@ -51,8 +51,8 @@ problem from HW1 into a theorem statement, and prove the theorem! -/
 
 /- ## Question 2 (5 points): Logical Connectives
 
-2.1 (1 point). Prove the following property about implication using basic
-tactics.
+### 2.1 (1 point). 
+Prove the following property about implication using basic tactics.
 
 Hints:
 
@@ -66,7 +66,8 @@ Hints:
   ¬ a ∨ b → a → b :=
   sorry
 
-/- 2.2 (2 points).
+/- 
+### 2.2 (2 points).
 
 The logical rules we have seen so far describe *intuitionistic* logic.
 There are some statements that we can't prove using only these rules,
@@ -134,13 +135,20 @@ theorem DN_of_Peirce :
   sorry
 
 
-/- 2.3 (2 points). We have three of the six possible implications
-between `ExcludedMiddle`, `Peirce`, and `DoubleNegation`. State and prove the
-three missing implications, exploiting the three theorems we already have. -/
+/- 
+### 2.3 (2 points). 
+
+We have three of the six possible implications between `ExcludedMiddle`, 
+`Peirce`, and `DoubleNegation`. State and prove the three missing implications, 
+exploiting the three theorems we already have. -/
 
 
--- enter your solution here
+/- enter your solution here
 
+```
+```
+
+-/
 
 /-! ## Question 3 (3 points): Equality
 
