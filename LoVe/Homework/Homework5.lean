@@ -53,7 +53,7 @@ Prove the following theorem by rule induction: -/
   sorry
 
 /-
-### 2.4 (1 point).
+### 1.4 (1 point).
 Prove the following theorem using rule induction.
 
 Hint: Recall that `¬ a` is defined as `a → false`. -/
