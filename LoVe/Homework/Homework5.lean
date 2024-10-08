@@ -400,7 +400,9 @@ We have stated this proof technique below. Prove its correctness.
     P (List.foldl f z xs) [] :=
 sorry
 
-/-! _.6 (2 points). Fill in the `sorry`s below to show the desired property of
+/-!
+### 3.6 (2 points).
+Fill in the `sorry`s below to show the desired property of
 `fold_reverse`: that it returns a list of the same length as its input.
 
 We've provided some lemmas you may find useful; also recall that `linarith` can
