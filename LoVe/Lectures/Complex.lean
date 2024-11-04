@@ -28,25 +28,34 @@ def Complex.neg (a : Complex) : Complex where
   real := -a.real
   im := -a.im
 
-instance : CommRing Complex :=
-{ add := Complex.add
-  mul := Complex.mul
-  zero := zero
-  neg := Complex.neg
+instance : CommRing Complex where
+  add := Complex.add
   add_assoc := _
+  zero := zero
   zero_add := zero_add
   add_zero := _
-  add_left_neg := _
+  nsmul := @nsmulRec _ ⟨zero⟩ ⟨Complex.add⟩
   add_comm := _
+  mul := Complex.mul
   left_distrib := _
-  --right_distrib', 'zero_mul', 'mul_zero', 'mul_assoc', 'one', 'one_mul', 'mul_one', 'mul_comm'
-    }
+  right_distrib := _
+  zero_mul := _
+  mul_zero := _
+  mul_assoc := _
+  one := {real := 1, im := 0}
+  one_mul := _
+  mul_one := _
+  neg := Complex.neg
+  zsmul := @zsmulRec _ ⟨zero⟩ ⟨Complex.add⟩ ⟨Complex.neg⟩ ( @nsmulRec _ ⟨zero⟩ ⟨Complex.add⟩)
+  add_left_neg := _
+  mul_comm := _
+
 
 
 
 example (a b : Complex) : a + b = b + a := by ring
 
--- example (a b : ℕ) : (a : Complex) + b = b + a := by
+example (a b : ℕ) : (a : Complex) + b = b + a := add_comm _ _
 
 
 structure Polar : Type where
