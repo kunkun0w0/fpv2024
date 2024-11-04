@@ -76,13 +76,39 @@ noncomputable def Polar.toComplex (p : Polar) : Complex where
   real := p.magnitude * Real.cos p.angle
   im := p.magnitude * Real.sin p.angle
 
-theorem to_and_from (p : Polar) : p.toComplex.toPolar = p := by
+theorem to_and_from (p : Polar)
+  (hangle1 : -(Real.pi / 2) < p.angle)
+  (hangle2 : (Real.pi / 2) > p.angle)
+  (hmag : p.magnitude > 0) : p.toComplex.toPolar = p := by
   cases' p with angle magnitude
   simp [Complex.toPolar, Polar.toComplex]
   constructor
   { rw [mul_div_mul_left, ← Real.tan_eq_sin_div_cos]
     rw [Real.arctan_tan]
+    all_goals linarith }
+  { suffices : (magnitude * Real.cos angle)^2 + (magnitude * Real.sin angle)^2 = magnitude^2
+    { rw [this]
+      refine Real.sqrt_sq ?mk.right.h
+      linarith }
+    { have : (Real.sin angle)^2 + (Real.cos angle)^2 = 1 :=
+        Real.sin_sq_add_cos_sq angle
+      linear_combination magnitude ^ 2 * this }
+   }
 
-    }
+def Complex.reals : Set Complex :=
+  {c : Complex | c.im = 0}
+
+#check Complex.reals
+#check (Set.univ : Set Complex)
+
+#check Inter.inter
+
+example {s t : Set Complex} : s ∩ Complex.reals = Complex.reals ∪ t := by
+  simp [Complex.reals]
+
+def realFn : ↑(Complex.reals ∪ Set.univ) → ℝ :=
+  _ --fun ⟨x, hx⟩ => x.real
+
+#check Set.Elem
 
 end new
