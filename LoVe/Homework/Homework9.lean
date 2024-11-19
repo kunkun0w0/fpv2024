@@ -96,8 +96,7 @@ be.
 ### 3.1 (2 points): Defining Dedekind Cuts
 
 We first formalize Dedekind cuts. We suggest using the definition in `rudin`
- (p. 17):
-`https://web.math.ucsb.edu/~agboola/teaching/2021/winter/122A/rudin.pdf`
+ (p. 17): `https://static.us.edusercontent.com/files/TM0A2xT0CcKomdLEkdpV7bH7`
 
 We restate it here:
 
