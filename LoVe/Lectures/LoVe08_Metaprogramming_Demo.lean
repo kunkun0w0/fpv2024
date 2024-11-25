@@ -231,6 +231,7 @@ theorem hypothesis_example {α : Type} {p : α → Prop} {a : α}
   p a :=
   by hypothesis
 
+#print hypothesis_example
 
 /- ## Expressions
 
@@ -377,6 +378,10 @@ partial def destructAndExpr (hP : Expr) : TacticM Bool :=
 
 #check Expr.and?
 
+-- def MyInductiveType : Type  := sorry
+-- def myFun : MyInductiveType → Bool := sorry
+-- def myFun_is_a_good_one : Good myFun := by my_favorite_tactic
+
 def destructAnd (name : Name) : TacticM Unit :=
   withMainContext
     (do
@@ -398,9 +403,12 @@ theorem abc_b_again (a b c : Prop) (h : a ∧ b ∧ c) :
   b :=
   by destruct_and h
 
+#check Expr.fvar
+
 theorem abc_bc_again (a b c : Prop) (h : a ∧ b ∧ c) :
   b ∧ c :=
   by destruct_and h
+
 
 /- This is successful because `a ∧ b ∧ c` is grouped as `a ∧ (b ∧ c)`.
    Why would it fail on `(a ∧ b) ∧ c`? -/
@@ -478,6 +486,8 @@ theorem Nat.Eq_symm (x y : ℕ) (h : x = y) :
   y = x :=
   by prove_direct
 
+#check IsSymm.symm
+
 theorem Nat.Eq_symm_manual (x y : ℕ) (h : x = y) :
   y = x :=
   by
@@ -497,5 +507,41 @@ theorem List.reverse_twice (xs : List ℕ) :
 theorem List.reverse_twice_library_search (xs : List ℕ) :
   List.reverse (List.reverse xs) = xs :=
   by exact?
+
+
+
+def findMainFunction : Expr → Option Name
+| Expr.app f _ => findMainFunction f
+| Expr.const n _ => n
+| _ => none
+
+
+partial def applyInductiveConstructors : TacticM Unit :=  withMainContext do
+  let mainGoal ← getMainGoal
+  let target ← mainGoal.getType
+  let targetMainFn := findMainFunction target
+  match targetMainFn with
+  | some nm =>
+    let mainDecl ← (← getEnv).find? nm
+    match mainDecl with
+    | ConstantInfo.inductInfo i =>
+      for ctor in i.ctors do
+        try
+          andThenOnSubgoals
+            (applyConstant ctor)
+            applyInductiveConstructors
+        catch _ => continue
+    | _ => failure
+  | none => failure
+
+elab "apply_constructors" : tactic =>
+applyInductiveConstructors
+
+#print InductiveVal
+
+
+theorem faa : Nat.le 5 10 := by apply_constructors
+
+#print faa
 
 end LoVe
