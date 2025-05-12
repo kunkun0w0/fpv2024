@@ -67,20 +67,89 @@ structure DFA (State Alphabet : Type) where
 /- The we define the procedure of transistion execution.
 -/
 
+def DFA.step_from {State Alphabet : Type}
+  (dfa : DFA State Alphabet)
+  (q : State)
+  (input : List Alphabet) : Option State :=
+  input.foldlM (fun s a => dfa.transition s a) q
+
+def DFA.step_from_opt {State Alphabet : Type}
+  (dfa : DFA State Alphabet)
+  (q : Option State)
+  (input : List Alphabet) : Option State :=
+  match q with
+  | none => none
+  | some q => dfa.step_from q input
+
+/- step_from is a function to simulate the transition in DFA from a
+given initial state over a list of symbols. Then for any DFA, there
+is a compisition law as follow:
+step_from (q, x++y) = step_from (step_from (q, x), y)-/
+
+/-Task1: step_from q (a :: rest) = step_from (transition q a) rest -/
+lemma DFA.step_from_ompisition_1 {State Alphabet : Type} [BEq State] [Inhabited State] [BEq Alphabet] [Inhabited Alphabet]
+  (dfa : DFA State Alphabet)
+  (q : State)
+  (a : Alphabet)
+  (rest : List Alphabet) :
+  dfa.step_from_opt q (a :: rest) = dfa.step_from_opt (dfa.transition q a) rest := by
+  unfold DFA.step_from_opt
+  simp
+  unfold DFA.step_from
+  simp
+  cases h : dfa.transition q a with
+  | none =>
+    simp
+  | some q' =>
+    simp
+
+/-Task2: step_from q (x ++ y) = step_from (step_from q x) y -/
+lemma DFA.step_from_eq_step_from_opt_some
+  {State Alphabet : Type}
+  (dfa : DFA State Alphabet)
+  (q : State)
+  (input : List Alphabet) :
+  dfa.step_from q input = dfa.step_from_opt (some q) input := by
+  unfold DFA.step_from_opt
+  rfl
+
+lemma DFA.step_from_compisition_2 {State Alphabet : Type} [BEq State] [Inhabited State] [BEq Alphabet] [Inhabited Alphabet]
+  (dfa : DFA State Alphabet)
+  (qopt : Option State)
+  (x y : List Alphabet) :
+  dfa.step_from_opt qopt (x ++ y) = dfa.step_from_opt (dfa.step_from_opt qopt x) y := by
+  unfold DFA.step_from_opt
+  cases qopt with
+  | none =>
+    simp
+  | some q =>
+    induction x generalizing q with
+    | nil =>
+      simp only [List.nil_append, List.foldlM]
+      rfl
+    | cons a xs ih =>
+      simp only [List.cons_append, List.foldlM]
+      rw [DFA.step_from_eq_step_from_opt_some, DFA.step_from_ompisition_1]
+      rw [DFA.step_from_eq_step_from_opt_some, DFA.step_from_ompisition_1]
+      cases h : dfa.transition q a with
+      | none =>
+        simp [DFA.step_from_opt]
+      | some q' =>
+        simp [DFA.step_from_opt]
+        exact ih q'
+
 def DFA.run {State Alphabet : Type}
   (dfa : DFA State Alphabet)
   (input : List Alphabet) : Option State :=
-  let rec step (current_state : State) (remaining_input : List Alphabet) : Option State :=
-    match remaining_input with
-    | [] => some current_state
-    | x :: xs =>
-      match dfa.transition current_state x with
-      | none => none
-      | some next_state => step next_state xs
-  step dfa.start_state input
+  dfa.step_from_opt dfa.start_state input
 
 /- So, we can design a function to validate the input string
 -/
+
+def DFA.accepts_prop {State Alphabet : Type} [BEq State]
+  (dfa : DFA State Alphabet)
+  (input : List Alphabet) : Prop :=
+  ∃ s, dfa.run input = some s ∧ s ∈ dfa.accept_states
 
 def DFA.accepts {State Alphabet : Type} [BEq State]
   (dfa : DFA State Alphabet)
@@ -157,22 +226,182 @@ def DFA.run_ext {State Alphabet : Type}
   (dfa : DFA State Alphabet)
   (q : State)
   (input : List Alphabet) : Option State :=
-  let rec step (current_state : State) (remaining_input : List Alphabet) : Option State :=
-    match remaining_input with
-    | [] => some current_state
-    | x :: xs =>
-      match dfa.transition current_state x with
-      | none => none
-      | some next_state => step next_state xs
-  step q input
+  dfa.step_from_opt q input
 
 /- Different from DFA.run, DFA.run_ext can specifiy the starting state of
 transition procedure as any state, not only q0.
 -/
 
-/- ## 2.States Partitioning
+/- 2. **Myhill-Nerode Theorem**
+-/
+
+/-
+The Myhill-Nerode theorem is a fundamental result in automata theory that
+provides a way to determine whether a language is regular. It states that a
+language is regular if and only if the number of equivalence classes of the
+language under the Myhill-Nerode relation is finite.
+
+Let L ⊆ Σ* be a language over some alphabet Σ. The Myhill-Nerode relation
+~L is defined on strings x, y ∈ Σ* as follows:
+
+x ~L y ↔ ∀ z ∈ Σ*, xz ∈ L ↔ yz ∈ L
+
+That is, two strings are equivalent under ~L if and only if appending any
+suffix z to both strings results in either both being in the language or
+both being outside the language.
+-/
+
+def DFA.myhillNerodeEquiv {State Alphabet : Type} [BEq State] [BEq Alphabet] [Inhabited Alphabet]
+  (dfa : DFA State Alphabet) :
+  (List Alphabet) → (List Alphabet) → Bool :=
+  fun x y =>
+    let test_strings := [List.nil, [default], [default, default]]
+    test_strings.all (fun z => dfa.accepts (x ++ z) == dfa.accepts (y ++ z))
+
+#eval exampleDFA.myhillNerodeEquiv ['a', 'b', 'a'] ['a', 'b', 'b']  -- should be true
+#eval exampleDFA.myhillNerodeEquiv ['a', 'b'] ['a', 'a']  -- should be false
+
+
+/- To have a better understanding of the Myhill-Nerode relation, we can
+prove that the Myhill-Nerode relation is an equivalence relation.
+-/
+def DFA.myhillNerodeEquivProp {State Alphabet : Type} [BEq State] [BEq Alphabet] [Inhabited Alphabet]
+  (dfa : DFA State Alphabet) :
+  (List Alphabet) → (List Alphabet) → Prop :=
+  fun x y => ∀ z : List Alphabet, dfa.accepts (x ++ z) = dfa.accepts (y ++ z)
+
+theorem myhillNerodeEquiv_is_reflexive
+  {State Alphabet : Type} [BEq State] [BEq Alphabet] [Inhabited Alphabet]
+  (dfa : DFA State Alphabet) :
+  ∀ x : List Alphabet, dfa.myhillNerodeEquivProp x x := by
+  intro x
+  intro z
+  rfl
+
+theorem myhillNerodeEquiv_is_symmetric
+  {State Alphabet : Type} [BEq State] [BEq Alphabet] [Inhabited Alphabet]
+  (dfa : DFA State Alphabet) :
+  ∀ x y : List Alphabet, dfa.myhillNerodeEquivProp x y → dfa.myhillNerodeEquivProp y x := by
+  intro x y h
+  intro z
+  have h' := h z
+  exact Eq.symm h'
+
+theorem myhillNerodeEquiv_is_transitive
+  {State Alphabet : Type} [BEq State] [BEq Alphabet] [Inhabited Alphabet]
+  (dfa : DFA State Alphabet) :
+  ∀ x y z : List Alphabet,
+    dfa.myhillNerodeEquivProp x y →
+    dfa.myhillNerodeEquivProp y z →
+    dfa.myhillNerodeEquivProp x z := by
+  intro x y z h1 h2
+  intro w
+  have h1' := h1 w
+  have h2' := h2 w
+  exact Eq.trans h1' h2'
+
+/- The we start to prove a key lemma:
+If two strings lead to the same state, then they are equivalent under ~L, which means
+"same state" ⇒ "equivalent".
+
+Let 𝒜 be a DFA recognizing language L, and let δ'(q₀, x) denote the state reached
+after consuming input x starting from the initial state q₀. Then for any x and y
+in Σ*, δ'(q₀, x) = δ'(q₀, y) → x ~L y.
+
+That is, if two strings lead the DFA to the same state, then they are indistinguishable
+by any continuation, and thus Myhill-Nerode equivalent.
+-/
+
+/- We first define a help function to convert append run to run_ext.
+-/
+def DFA.run_ext_opt {State Alphabet : Type}
+  (dfa : DFA State Alphabet)
+  (qopt : Option State)
+  (input : List Alphabet) : Option State :=
+  match qopt with
+  | none => none
+  | some q => dfa.run_ext q input
+
+/- We prove the equivalence of append run and run_ext.
+DFA.run (x++y) = DFA.run_ext (DFA.run x) y. -/
+lemma DFA.run_append_eq_run_ext
+  {State Alphabet : Type} [BEq State] [Inhabited State] [BEq Alphabet] [Inhabited Alphabet]
+  (dfa : DFA State Alphabet)
+  (x y : List Alphabet)
+  (q : State) :
+  dfa.run (x ++ y) = dfa.run_ext_opt (dfa.run x) y := by
+  unfold DFA.run DFA.run_ext_opt
+  have h : dfa.step_from_opt (some dfa.start_state) (x ++ y)
+         = dfa.step_from_opt (dfa.step_from_opt (some dfa.start_state) x) y := by
+    apply DFA.step_from_compisition_2
+
+  rw [h]
+  cases dfa.step_from_opt (some dfa.start_state) x with
+  | none =>
+    simp
+    rw [DFA.step_from_opt]
+  | some q' =>
+    rw [DFA.step_from_opt]
+    rfl
+
+/- Then we can prove "same state" ⇒ "equivalent".-/
+theorem DFA.same_state_implies_equiv
+  {State Alphabet : Type} [BEq State] [Inhabited State] [BEq Alphabet] [Inhabited Alphabet]
+  (dfa : DFA State Alphabet)
+  (x y : List Alphabet)
+  (h : dfa.run x = dfa.run y) :
+  dfa.myhillNerodeEquivProp x y := by
+  unfold DFA.myhillNerodeEquivProp
+  intro z
+  unfold DFA.accepts
+  cases hx : dfa.run x with
+  | none =>
+    rw [h] at hx
+    unfold DFA.run
+    rw [DFA.step_from_compisition_2]
+    rw [DFA.step_from_compisition_2]
+    have h1: dfa.run x = none := by
+     rw [h]
+     exact hx
+    unfold DFA.run at hx
+    rw [hx]
+    unfold DFA.run at h1
+    rw [h1]
+  | some q =>
+    unfold DFA.run
+    rw [DFA.step_from_compisition_2]
+    rw [DFA.step_from_compisition_2]
+    have h2: dfa.run y = some q := by
+      rw [←h]
+      exact hx
+    unfold DFA.run at hx
+    rw [hx]
+    unfold DFA.run at h2
+    rw [h2]
+
+/- Then, we will think about can we prove "equivalent" ⇒ "same state"?-/
+theorem DFA.equiv_implies_same_state
+  {State Alphabet : Type} [BEq State] [Inhabited State] [BEq Alphabet] [Inhabited Alphabet]
+  (dfa : DFA State Alphabet)
+  (x y : List Alphabet)
+  (h : dfa.myhillNerodeEquivProp x y) :
+  dfa.run x = dfa.run y := by
+  sorry
+
+/- But you can easily find that the "equivalent" ⇒ "same state" is not true for every DFA.
+For example, when string x and string y go into different accepting states, then they are
+equivalent, but they lead to different states.
+
+However, can we find a type of DFA that satisfies "equivalent" ⇒ "same state"? Will this
+type of DFA is more representative structure?
+
+Yes! The minimal DFA is what we need!
+-/
+
+
+/- ## 3.States Partitioning
 Let's first learn how to partition a list of numbers into subsets based on
-some criteria.
+some criteria, before we try to minimize the DFA.
 
 Here is two examples about partitioning a list of Nat numbers based on:
 1. odd and even numbers
@@ -305,7 +534,7 @@ def EqClassPartitionDFA {State Alphabet : Type} [BEq State]
 
 #eval EqClassPartitionDFA BigDFA.transition BigDFA.alphabet (initial_partition BigDFA.states BigDFA.accept_states) (BigDFA.states.length * BigDFA.alphabet.length)
 
-/- ## 3.DFA Minimization
+/- ## 4.DFA Minimization
 In the previous section, we implemented the partition refinement step
 for DFA based on equivalence. And we reduce the amount of states in a DFA
 while presevering the behavior towards any valid input string!
@@ -337,10 +566,10 @@ def BigDFA_2 : DFA Char ℕ :=
       | 'b', 1 => some 'd'
       | 'c', 0 => some 'e'
       | 'd', 0 => some 'e'
-      | 'c', 1 => some 'f'
-      | 'd', 1 => some 'f'
+      | 'c', 1 => some 'd'
+      | 'd', 1 => some 'e'
       | 'e', 0 => some 'e'
-      | 'e', 1 => some 'f'
+      | 'e', 1 => some 'c'
       | 'f', 0 => some 'f'
       | 'f', 1 => some 'f'
       | 'g', 2 => some 'g'
@@ -457,6 +686,13 @@ def DFA.minimize {State Alphabet : Type} [BEq State] [Inhabited State]
 
 #eval BigDFA_2
 #eval BigDFA_2.minimize
+def minDFA := BigDFA_2.minimize
+#eval minDFA
+#eval minDFA.alphabet
+#eval minDFA.states
+#eval minDFA.accept_states
+#eval minDFA.run_ext ['a', 'b'] [1]
+#eval ['c', 'd', 'e'] ∉ minDFA.accept_states
 
 
 end LoVe

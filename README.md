@@ -3,6 +3,12 @@
 
 In this repository, you'll find zekun's final project in `LoVe/Homework/FinalProject.lean`
 
+The project contains:
+1. Basic definitions of DFA.
+2. Myhill-Nerode equivalence
+3. States Partitioning
+4. DFA Minimization
+
 ## Using this repository
 
 This repository is a [Lean project](https://leanprover-community.github.io/install/project.html).
