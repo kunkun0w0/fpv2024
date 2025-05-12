@@ -87,7 +87,7 @@ is a compisition law as follow:
 step_from (q, x++y) = step_from (step_from (q, x), y)-/
 
 /-Task1: step_from q (a :: rest) = step_from (transition q a) rest -/
-lemma DFA.step_from_ompisition_1 {State Alphabet : Type} [BEq State] [Inhabited State] [BEq Alphabet] [Inhabited Alphabet]
+lemma DFA.step_from_compisition_1 {State Alphabet : Type} [BEq State] [Inhabited State] [BEq Alphabet] [Inhabited Alphabet]
   (dfa : DFA State Alphabet)
   (q : State)
   (a : Alphabet)
@@ -129,8 +129,8 @@ lemma DFA.step_from_compisition_2 {State Alphabet : Type} [BEq State] [Inhabited
       rfl
     | cons a xs ih =>
       simp only [List.cons_append, List.foldlM]
-      rw [DFA.step_from_eq_step_from_opt_some, DFA.step_from_ompisition_1]
-      rw [DFA.step_from_eq_step_from_opt_some, DFA.step_from_ompisition_1]
+      rw [DFA.step_from_eq_step_from_opt_some, DFA.step_from_compisition_1]
+      rw [DFA.step_from_eq_step_from_opt_some, DFA.step_from_compisition_1]
       cases h : dfa.transition q a with
       | none =>
         simp [DFA.step_from_opt]
